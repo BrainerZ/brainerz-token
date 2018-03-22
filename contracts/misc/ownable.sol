@@ -1,14 +1,14 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.21;
 
 // Taken from: 
-contract Owneable {
+contract Ownable {
     address public owner; // should it preferable by internal?
     address public newOwner;
 
     event OwnershipTransferred(address indexed _from, address indexed _to);
 
 
-    function Owneable() public {
+    function Ownable() public {
         owner = msg.sender;
     }
 

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.21;
 
 // @dev Contract to hold sale raised funds during the sale period.
 // Prevents attack in which the Aragon Multisig sends raised ether
@@ -30,12 +30,16 @@ contract SaleWallet {
   // @dev Withdraw function sends all the funds to the wallet if conditions are correct
   function withdraw() public {
     // TODO: throw not valid anymore. use revert
-    if (msg.sender != multisig) throw;                       // Only the multisig can request it  
-    if (block.number > finalBlock) return doWithdraw();      // Allow after the final block
-    if (tokenSale.saleFinalized()) return doWithdraw();      // Allow when sale is finalized
+    if (msg.sender != multisig) 
+      revert();                       // Only the multisig can request it  
+    if (block.number > finalBlock) 
+      return doWithdraw();      // Allow after the final block
+    if (tokenSale.saleFinalized()) 
+      return doWithdraw();      // Allow when sale is finalized
   }
 
   function doWithdraw() internal {
-    if (!multisig.send(this.balance)) throw;
+    if (!multisig.send(this.balance)) 
+      revert();
   }
 }
