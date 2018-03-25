@@ -1,0 +1,4 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "solidity.compileUsingRemoteVersion" : "v0.4.21+commit.dfe3193c"
+}

@@ -1,9 +1,12 @@
-pragma solidity ^0.4.18;
+pragma solidity 0.4.21;
+
+
+interface tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) public; }
 
 // Taken from: consensys
 // TODO: IS THIS totalSupply TRICK LEGIT?
 
-contract EIP20Interface {
+contract ERC20Interface {
     /* This is a slight change to the ERC20 base standard.
     function totalSupply() constant returns (uint256 supply);
     is replaced with:
@@ -18,7 +21,7 @@ contract EIP20Interface {
 
     /// @param _owner The address from which the balance will be retrieved
     /// @return The balance
-    function balanceOf(address _owner) public view returns (uint256 balance);
+    function balanceOf(address _owner) public constant returns (uint256 balance);
 
     /// @notice send `_value` token to `_to` from `msg.sender`
     /// @param _to The address of the recipient
@@ -42,7 +45,7 @@ contract EIP20Interface {
     /// @param _owner The address of the account owning tokens
     /// @param _spender The address of the account able to transfer the tokens
     /// @return Amount of remaining tokens allowed to spent
-    function allowance(address _owner, address _spender) public view returns (uint256 remaining);
+    function allowance(address _owner, address _spender) public constant returns (uint256 remaining);
 
     // solhint-disable-next-line no-simple-event-func-name  
     event Transfer(address indexed _from, address indexed _to, uint256 _value); 
