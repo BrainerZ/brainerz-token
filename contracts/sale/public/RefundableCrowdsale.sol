@@ -1,7 +1,10 @@
+pragma solidity ^0.4.18;
 
-import "../../math/SafeMath.sol";
-import "./FinalizableCrowdsale.sol";
-import "./utils/RefundVault.sol";
+
+import "../../misc/SafeMath.sol";
+import "../../misc/Ownable.sol";
+import "../CrowdSale.sol";
+import "../RefundVault.sol";
 
 
 /**
@@ -10,7 +13,7 @@ import "./utils/RefundVault.sol";
  * the possibility of users getting a refund if goal is not met.
  * Uses a RefundVault as the crowdsale's vault.
  */
-contract RefundableCrowdsale is FinalizableCrowdsale {
+contract RefundableCrowdsale is Crowdsale, Ownable {
   using SafeMath for uint256;
 
   // minimum amount of funds to be raised in weis
@@ -19,13 +22,18 @@ contract RefundableCrowdsale is FinalizableCrowdsale {
   // refund vault used to hold funds while crowdsale is running
   RefundVault public vault;
 
+  
+  bool public isFinalized = false;
+
+  event Finalized();
+
   /**
    * @dev Constructor, creates RefundVault. 
    * @param _goal Funding goal
    */
-  function RefundableCrowdsale(uint256 _goal) public {
+  function RefundableCrowdsale(uint256 _goal, uint _closingTime) public {
     require(_goal > 0);
-    vault = new RefundVault(wallet);
+    vault = new RefundVault(wallet, _closingTime);
     goal = _goal;
   }
 
@@ -33,7 +41,7 @@ contract RefundableCrowdsale is FinalizableCrowdsale {
    * @dev Investors can claim refunds here if crowdsale is unsuccessful
    */
   function claimRefund() public {
-    require(isFinalized);
+    require(vault.state() == RefundVault.State.Closed);
     require(!goalReached());
 
     vault.refund(msg.sender);
@@ -48,6 +56,20 @@ contract RefundableCrowdsale is FinalizableCrowdsale {
   }
 
   /**
+   * @dev Must be called after crowdsale ends, to do some extra finalization
+   * work. Calls the contract's finalization function.
+   */
+  function finalize() onlyOwner public {
+    require(!isFinalized);
+    require(block.timestamp > vault.closingTime());
+
+    finalization();
+    Finalized();
+
+    isFinalized = true;
+  }
+
+  /**
    * @dev vault finalization task, called when owner calls finalize()
    */
   function finalization() internal {
@@ -56,8 +78,6 @@ contract RefundableCrowdsale is FinalizableCrowdsale {
     } else {
       vault.enableRefunds();
     }
-
-    super.finalization();
   }
 
   /**

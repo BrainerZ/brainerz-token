@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
-import "../../../math/SafeMath.sol";
-import "../../../ownership/Ownable.sol";
+import "../misc/SafeMath.sol";
+import "../misc/Ownable.sol";
 
 
 /**
@@ -18,17 +18,20 @@ contract RefundVault is Ownable {
   mapping (address => uint256) public deposited;
   address public wallet;
   State public state;
+  uint public closingTime;
 
   event Closed();
   event RefundsEnabled();
   event Refunded(address indexed beneficiary, uint256 weiAmount);
 
   /**
-   * @param _wallet Vault address
+   * @param _multisig Vault address
    */
-  function RefundVault(address _wallet) public {
-    require(_wallet != address(0));
-    wallet = _wallet;
+  function RefundVault(address _multisig, uint _closingTime) public {
+    require(_multisig != address(0));
+    wallet = _multisig;
+    require(closingTime > block.number);
+    closingTime = _closingTime;
     state = State.Active;
   }
 
@@ -42,6 +45,7 @@ contract RefundVault is Ownable {
 
   function close() onlyOwner public {
     require(state == State.Active);
+    require(closingTime < block.timestamp);
     state = State.Closed;
     Closed();
     wallet.transfer(this.balance);

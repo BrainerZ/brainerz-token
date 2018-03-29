@@ -1,9 +1,8 @@
-pragma solidity 0.4.21;
+pragma solidity ^0.4.18;
 
-import "../misc/safe-math.sol";
-import "../misc/ownable.sol";
-import "./erc20-interface.sol";
-import "./erc667-interface.sol";
+import "../misc/SafeMath.sol";
+import "../misc/Ownable.sol";
+import "./ERC667.sol";
 
 contract BrainerzToken is Ownable, Standard677Token {
 

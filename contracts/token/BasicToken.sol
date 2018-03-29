@@ -1,6 +1,6 @@
-pragma solidity 0.4.21;
-import "./erc20-interface.sol";
-import "../misc/safe-math.sol";
+pragma solidity ^0.4.18;
+import "./ERC20.sol";
+import "../misc/SafeMath.sol";
 
 /// @title Basic ERC20 token contract implementation.
 /// @dev Based on OpenZeppelin's StandardToken.

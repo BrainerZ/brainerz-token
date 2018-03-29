@@ -1,8 +1,8 @@
-pragma solidity 0.4.21;
+pragma solidity ^0.4.18;
 
-import "../misc/safe-math.sol";
+import "../misc/SafeMath.sol";
 import "../misc/ownable.sol";
-import "../brainerz-token/erc20-interface.sol";
+import "../token/Erc20.sol";
 
 contract Bounty is Ownable {
 	

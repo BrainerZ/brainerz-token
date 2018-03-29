@@ -1,7 +1,7 @@
-pragma solidity 0.4.21;
-import "./erc20-interface.sol";
-import "./basic-token.sol";
-import "../misc/ownable.sol";
+pragma solidity ^0.4.18;
+import "./ERC20.sol";
+import "./BasicToken.sol";
+import "../misc/Ownable.sol";
 
 /// @title ERC Token Standard #677 Interface (https://github.com/ethereum/EIPs/issues/677)
 contract ERC677Interface is ERC20Interface {
@@ -9,7 +9,6 @@ contract ERC677Interface is ERC20Interface {
 
     event TransferAndCall(address indexed from, address indexed to, uint value, bytes data);
 }
-
 
 /// @title Standard677Token implentation, base on https://github.com/ethereum/EIPs/issues/677
 
