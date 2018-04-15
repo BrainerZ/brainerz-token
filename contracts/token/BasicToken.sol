@@ -8,6 +8,7 @@ contract BasicToken is ERC20Interface {
     using SafeMath for uint256;
 
     uint256 public totalSupply;
+    
     mapping (address => mapping (address => uint256)) allowed;
     mapping (address => uint256) balances;
 

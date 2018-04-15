@@ -1,7 +1,7 @@
 pragma solidity ^0.4.18;
 
 
-interface tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) public; }
+interface tokenRecipient { function receiveApproval(address _from, uint256 _value, address _token, bytes _extraData) external; }
 
 // Taken from: consensys
 // TODO: IS THIS totalSupply TRICK LEGIT?
@@ -50,4 +50,37 @@ contract ERC20Interface {
     // solhint-disable-next-line no-simple-event-func-name  
     event Transfer(address indexed _from, address indexed _to, uint256 _value); 
     event Approval(address indexed _owner, address indexed _spender, uint256 _value);
+}
+
+contract FractionalERC20 is ERC20Interface {
+        uint8 public decimals;
+}
+
+
+/**
+ * @title SafeERC20
+ * @dev Wrappers around ERC20 operations that throw on failure.
+ * To use this library you can add a `using SafeERC20 for ERC20;` statement to your contract,
+ * which allows you to call the safe operations as `token.safeTransfer(...)`, etc.
+ */
+
+library SafeERC20 {
+  function safeTransfer(ERC20Interface token, address to, uint256 value) internal {
+    assert(token.transfer(to, value));
+  }
+
+  function safeTransferFrom(
+    ERC20Interface token,
+    address from,
+    address to,
+    uint256 value
+  )
+    internal
+  {
+    assert(token.transferFrom(from, to, value));
+  }
+
+  function safeApprove(ERC20Interface token, address spender, uint256 value) internal {
+    assert(token.approve(spender, value));
+  }
 }
