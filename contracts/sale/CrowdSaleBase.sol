@@ -38,9 +38,6 @@ contract CrowdSaleBase is Haltable {
 
   /* Amount of wei raised */
   uint public weiRaised = 0;
-
-  /* Calculate incoming funds from presale contracts and addresses */
-  uint public presaleWeiRaised = 0;
   
   /* the number of tokens already sold through this contract*/
   uint public tokensSold = 0;
@@ -71,7 +68,7 @@ contract CrowdSaleBase is Haltable {
   mapping (address => uint256) public investedAmountOf;
 
   /** How much tokens this CrowdSaleBase has credited for each investor address */
-  mapping (address => uint256) public tokenAmountOf;
+  mapping (address => uint256) public tokensAllocated;
 
 
 
@@ -159,7 +156,7 @@ contract CrowdSaleBase is Haltable {
 
     // Account presale sales separately, so that they do not count against pricing tranches
     // Decimals is 18 in BrainerZ token (and this is how the pre-sale sums are calculated)
-    uint tokenAmount = pricingStrategy.calculatePrice(weiAmount, weiRaised - presaleWeiRaised, tokensSold, msg.sender, 18);
+    uint tokenAmount = pricingStrategy.calculatePrice(weiAmount, weiRaised , tokensSold, msg.sender, 18);
 
     // Dust transaction
     require(tokenAmount != 0);
@@ -176,10 +173,6 @@ contract CrowdSaleBase is Haltable {
     // Update totals
     weiRaised = weiRaised.plus(weiAmount);
     tokensSold = tokensSold.plus(tokenAmount);
-
-    if(pricingStrategy.isPresalePurchase(receiver)) {
-        presaleWeiRaised = presaleWeiRaised.plus(weiAmount);
-    }
 
     // Check that we did not bust the cap
     require(!isBreakingCap(weiAmount, tokenAmount, weiRaised, tokensSold));
